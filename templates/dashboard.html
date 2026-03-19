@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trust Issues — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --accent: #00ff88;
+      --accent-dim: #00ff8820;
+      --red: #ff4466;
+      --yellow: #ffcc00;
+      --text: #c8c8d8;
+      --text-dim: #555566;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    /* Nav */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .nav-logo {
+      font-family: var(--sans);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .role-badge {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+
+    .role-badge.user  { border-color: var(--text-dim); color: var(--text-dim); }
+    .role-badge.admin { border-color: var(--accent);   color: var(--accent); background: var(--accent-dim); }
+
+    .logout {
+      color: var(--red);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    .logout:hover { opacity: 0.7; }
+
+    /* Main */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 24px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+      font-family: var(--sans);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* Locked panel */
+    .locked {
+      border-color: var(--red);
+      text-align: center;
+      padding: 50px 32px;
+    }
+
+    .lock-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .locked h2 {
+      font-family: var(--sans);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+
+    .locked p {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.8;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .locked p span { color: var(--yellow); }
+
+    /* Flag panel */
+    .flag-panel {
+      border-color: var(--accent);
+      border-top: 2px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flag-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, #00ff8810, transparent 60%);
+    }
+
+    .flag-panel h2 {
+      font-family: var(--sans);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .flag-panel p {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .flag-box {
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      padding: 18px 24px;
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: 1px;
+      word-break: break-all;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .flag-box:hover { background: var(--accent-dim); }
+
+    .copy-hint {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 10px;
+      position: relative;
+    }
+
+    /* Info cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    .info-card .label {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .info-card .value {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .info-card .value.green { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">Trust Issues</div>
+    <div class="nav-right">
+      <div class="role-badge {{ role }}">{{ role }}</div>
+      <a href="/logout" class="logout">[ logout ]</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-title">Employee Dashboard</div>
+    <div class="page-sub">// welcome back, {{ role }}</div>
+
+    {% if flag %}
+      <!-- Admin view — flag revealed -->
+      <div class="card flag-panel">
+        <div class="card-title">🏁 Classified — Admin Access Granted</div>
+        <h2>You're in.</h2>
+        <p>You successfully manipulated your session cookie. The server trusted you blindly. Here's your reward:</p>
+        <div class="flag-box" onclick="navigator.clipboard.writeText('{{ flag }}'); this.innerText='Copied!';" title="Click to copy">
+          {{ flag }}
+        </div>
+        <div class="copy-hint">// click to copy</div>
+      </div>
+
+    {% else %}
+      <!-- Regular user view — locked -->
+      <div class="card locked">
+        <div class="lock-icon">🔒</div>
+        <h2>Access Denied</h2>
+        <p>
+          This area is restricted to <span>admins only</span>.<br/><br/>
+          Your current role is <span>{{ role }}</span>. Think there's a way to change that?<br/><br/>
+          Maybe take a closer look at what your browser is storing...
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Info cards always visible -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="label">Current Role</div>
+        <div class="value {% if role == 'admin' %}green{% endif %}">{{ role }}</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Portal Status</div>
+        <div class="value green">online</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Auth Method</div>
+        <div class="value">cookie-based</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Encryption</div>
+        <div class="value">none 😬</div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
