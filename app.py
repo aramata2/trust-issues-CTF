@@ -8,7 +8,7 @@ USERS = {
     "player": "password123"
 }
 
-FLAG = "CTF{enc0d1ng_1s_n0t_encryp710n}"
+FLAG = "cusectf{enc0d1ng_1s_n0t_encryp710n}"
 
 
 def get_role():
